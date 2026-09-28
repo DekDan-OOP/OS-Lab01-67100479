@@ -1,16 +1,22 @@
 ======================================================
 COE67-XXX Operating Systems - Lab 01 Report
-Name: 
-Student ID: 
+Name: Danich Khawngam
+Student ID: 67100479
 ======================================================
 
 1. Hardware Baseline:
-- OS Version:
-- Number of CPU Cores:
-- Total RAM:
+- OS Version: Linux kernel 6.8.0-1064-azure (x86_64)
+- Number of CPU Cores: 2
+- Total RAM: Approximately 7.8 GiB
 
 2. Observation (from htop during stress test):
-[Write your answer here]
+During the stress test, the Python process continuously used a large amount of CPU.
+One CPU core reached close to 100% utilization, while the other core remained available or was used by other processes.
+The process stayed at the top of the CPU usage list. Memory usage changed only slightly because the stress test performs computation rather than allocating large amounts of memory.
+The system remained responsive, although the CPU load increased while the test was running.
 
 3. Analysis:
-[Write your answer here]
+The stress-test process is CPU bound because it repeatedly performs calculations without waiting for input or output.
+The operating system scheduler assigns the process to a CPU core and gives it time slices so that other processes can also execute.
+Since the environment has two CPU cores, one core can be heavily occupied by the stress test while the other handles the operating system and other applications.
+CPU utilization therefore increases significantly, but memory usage remains nearly constant. When the stress test stops, the scheduler removes that workload and CPU utilization returns to its normal level.

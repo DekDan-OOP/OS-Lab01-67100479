@@ -1,8 +1,10 @@
 # ==========================================
 # OS-Lab 01: CPU Stress Test
-# Student ID: [Enter your ID here]
+# Student ID: 67100479
 # ==========================================
-import time
+import math
 
-# TODO: Write the intensive computation loop here
-# Follow the instructions in the Lab manual.
+print("Starting CPU stress test...")
+while True:
+    math.factorial(50000)  # Perform a CPU-intensive operation
+
