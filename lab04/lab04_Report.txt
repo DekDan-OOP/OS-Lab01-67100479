@@ -1,0 +1,56 @@
+======================================================
+COE67-222 Operating Systems - Lab 04 Report
+Name: Danich Khawngam
+Student ID: 67100479
+======================================================
+
+1. The Deadlock (Phase 2):
+In the `deadlock_simulation.py` script, the Circular Wait condition occurred because the two models acquired the GPUs in opposite order. Model A first acquired GPU 0, while Model B first acquired GPU 1. After that, Model A tried to acquire GPU 1, but that resource was already held by Model B. At the same time, Model B tried to acquire GPU 0, but that resource was already held by Model A. As a result, the system reached the following state:
+
+- Model A: holds GPU 0 and waits for GPU 1
+- Model B: holds GPU 1 and waits for GPU 0
+
+This created a closed loop where each process was waiting for a resource held by the other process. Since neither model could release its current resource until it obtained the other one, both were blocked forever. This is the classic Circular Wait condition that leads to deadlock.
+
+2. The Solution (Phase 3):
+By changing the code in `deadlock_avoidance.py` so that Model B also requested GPU 0 first, the system no longer had opposite lock acquisition orders. Both models followed the same order:
+
+- Model A: GPU 0 → GPU 1
+- Model B: GPU 0 → GPU 1
+
+This specifically broke the Circular Wait condition because there was no longer a cycle such as:
+
+- A waits for B's GPU 1 while holding A's GPU 0
+- B waits for A's GPU 0 while holding B's GPU 1
+
+Instead, only one process could hold GPU 0 at a time. The second process had to wait until the first process finished and released both locks. Since the lock order was consistent, no circular dependency could form, and deadlock was avoided.
+
+3. Starvation vs Deadlock (Phase 4):
+The final output of the starvation script is fundamentally different from the deadlock script because starvation does not completely freeze the system. In `starvation_sim.py`, all threads continued to run and the program ended normally after 3 seconds, but the resource access was extremely unfair. The final counts were:
+
+- Greedy_Model_A: 25001 times
+- Greedy_Model_B: 25063 times
+- Polite_Model: 298 times
+
+This shows that the polite model was repeatedly denied access to the lock, even though the program still completed. In contrast, the deadlock script did not finish normally; both processes became stuck waiting on each other and the system halted completely. Therefore:
+
+- Deadlock = total system halt
+- Starvation = system keeps running, but a process is unfairly delayed or denied resources
+
+Aging is a scheduling strategy where a process that has waited too long gradually gains higher priority. In this scenario, the scheduler could increase the priority of the `Polite_Model` as its waiting time increases. As a result, even if the greedy models keep acquiring the lock first, the polite model would eventually receive a fair share of CPU time. Aging helps prevent starvation by giving older waiting processes better chances to run.
+
+4. Deadlock Detection & Recovery (Phase 3.3):
+The `timeout` parameter in `deadlock_detection.py` simulated deadlock detection in an operating system. The code used:
+
+- `gpu_1_lock.acquire(timeout=TIMEOUT)`
+
+This means the system waited for up to 2 seconds for GPU 1. If the lock was not available within that time, the OS assumed the process might be deadlocked or stuck waiting too long. This is similar to how an operating system uses a timeout or watchdog mechanism to detect a deadlock condition.
+
+When deadlock was detected, Model A performed recovery by releasing the resource it was currently holding. The exact step was:
+
+- `gpu_0_lock.release()`
+
+This rollback or preemption freed GPU 0, allowing Model B to continue. By releasing the lock, the circular wait was broken and the rest of the system could proceed normally instead of remaining frozen.
+
+Conclusion:
+This lab demonstrated the important differences between deadlock, starvation, and recovery. Deadlock occurs when processes wait in a circular loop and no progress is possible. Starvation happens when a process is repeatedly denied access even though the system continues to run. Deadlock avoidance works by enforcing consistent resource ordering, while deadlock detection uses timeout-based checking and recovery by releasing blocked resources so the system can continue operating normally.
