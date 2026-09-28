@@ -1,0 +1,23 @@
+======================================================
+COE67-222 Operating Systems - Lab 03 Report
+Name: Danich Khawngam
+Student ID: 67100479
+======================================================
+
+1. The Race Condition (Phase 2):
+The update to `shared_weight` is a read-modify-write operation, not one atomic operation. A thread reads the current value into `temp`, but before it writes `temp + 1`, the other thread can read the same old value. Both threads then write the same incremented value, so one update overwrites the other and the final value is less than the expected value of 200.
+
+The `time.sleep(0.0000001)` call creates an opportunity for the OS scheduler to switch from one thread to the other between the read and the write. The scheduler interleaves the threads, allowing both of them to use the same stale value. The exact final value can vary depending on the scheduling order, which makes this a race condition.
+
+2. Mutex vs. Semaphore (Phase 3):
+In `producer_consumer.py`, the `mutex` provides mutual exclusion. It allows only one thread at a time to enter the buffer critical section, so updates to `buffer`, `in_index`, and `out_index` do not interfere with one another.
+
+The `empty` semaphore counts available empty slots in the bounded buffer. It starts at `BUFFER_SIZE` and makes the producer wait when the buffer is full. The `full` semaphore counts items currently in the buffer. It starts at zero and makes the consumer wait when the buffer is empty. After producing an item, the producer releases `full`; after consuming an item, the consumer releases `empty`.
+
+A mutex cannot replace these semaphores because a mutex only answers whether a critical section is locked. It does not count how many buffer slots or items are available. Using only a mutex could protect the buffer but would not correctly block the producer when the buffer is full or the consumer when it is empty.
+
+3. Deadlock Awareness:
+In the Producer function, we wrote:
+    empty.acquire()
+    mutex.acquire()
+If the order were changed to `mutex.acquire()` followed by `empty.acquire()`, a producer could lock the mutex while the buffer is full and then block waiting for an empty slot. The consumer would need the same mutex to remove an item and release an empty slot, but the producer is holding it. Therefore, the consumer cannot make progress, the producer cannot make progress, and both threads wait forever. This is a deadlock caused by holding a lock while waiting for a resource that another thread needs the lock to release. Acquiring `empty` before `mutex` avoids this problem because a producer waits for capacity before locking the buffer.
