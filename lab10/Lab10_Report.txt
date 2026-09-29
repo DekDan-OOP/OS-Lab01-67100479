@@ -1,0 +1,31 @@
+======================================================
+COE67-222 Operating Systems - Lab 10 Report (Final)
+Name: Danich Khawngam
+Student ID: 67100479
+======================================================
+
+1. The Role of the Operating System:
+In this mini-project, our Python script simulated the major responsibilities of an Operating System. 
+Match the specific code behavior in `ultimate_cluster_os.py` to the corresponding OS concept you learned throughout the semester:
+
+- File System & Permissions (Lab 9): 
+  [The code simulated File System security using os.path.exists(dataset_path) in the _execute_job() function. Workload D failed because it requested secret_keys.txt, but this file did not exist in the system. Therefore, the OS simulation rejected the job before it could run.]
+
+- Memory Management (Labs 5/6):
+  [The code used a while loop with ram_lock to control RAM allocation. Before starting a job, the system checked whether available_ram_gb >= req_ram. If there was not enough RAM, the job waited and checked again later. This prevented the system from allocating more RAM than was available, helping avoid memory exhaustion and excessive resource contention similar to thrashing.]
+
+- Concurrency & Deadlocks (Labs 3/4):
+  [The code used sorted(req_gpus) before acquiring GPU locks. For example, Workload A requested GPUs [2, 1, 0], but the system sorted them into [0, 1, 2]. By requiring jobs to acquire multiple resources in a consistent order, the system reduced the possibility of a Circular Wait condition, which is one of the necessary conditions for a deadlock.]
+
+2. Hardware Utilization:
+Look at the output of your Live Dashboard. Explain how the OS successfully ran Workload A (LLaMA Training), Workload B (Preprocessing), and Workload C (Inference) AT THE SAME TIME without crashing. Why didn't they block each other?
+
+Answer: The OS successfully ran Workload A, Workload B, and Workload C at the same time because each workload required different resources. Workload A used 40 GB of RAM and GPUs 0, 1, and 2 for LLaMA training. Workload B required 16 GB of RAM but no GPU, so it could run on the CPU and perform data preprocessing while Workload A was using the GPUs. Workload C required only 2 GB of RAM and GPU 3, which was still available. Therefore, all four GPUs and most of the available RAM could be utilized without the workloads blocking each other. The OS used locks and resource checking to prevent two jobs from using the same resource at the same time.
+
+3. Course Reflection (AI Engineering Context):
+You are now applying for a role as a Machine Learning Operations (MLOps) Engineer. 
+Write a short paragraph explaining how understanding Operating Systems (Process queues, RAM/Virtual Memory limits, Deadlock avoidance, File systems) gives you an advantage over a programmer who only knows how to write basic Python/PyTorch scripts.
+
+Answer: Understanding Operating Systems gives me an advantage as an MLOps Engineer because production AI systems need more than basic Python or PyTorch programming.
+I understand how process queues manage multiple jobs, how RAM and Virtual Memory limitations affect large AI workloads, and how resource ordering can help prevent deadlocks.
+I also understand how file systems and OS permissions can protect valuable model weights and datasets. And knowledge helps me understand what happens underneath an AI application and allows me to design and operate machine learning systems that are more reliable, efficient, secure, and scalable.
