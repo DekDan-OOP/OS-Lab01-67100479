@@ -1,0 +1,23 @@
+======================================================
+COE67-222 Operating Systems - Lab 08 Report
+Name: Danich Khawngam
+Student ID: 67100479
+======================================================
+
+1. Disk Scheduling (Phase 2):
+Looking at the output of `disk_scheduler.py`, why did the SCAN algorithm result in a significantly lower "Total Head Movement" compared to FCFS? Explain the logic behind the Elevator behavior.
+
+Answer:
+SCAN had much lower total head movement because it behaves like an elevator: the disk head keeps moving in one direction across the disk, servicing requests as it passes them, and then reverses direction only when it reaches the end of the disk. This reduces unnecessary backtracking and avoids the inefficient pattern of FCFS, which simply follows the order that requests arrived, even if those requests are scattered far apart on the disk. FCFS can keep jumping from one distant track to another, causing large total movement. SCAN, by contrast, takes advantage of spatial locality: requests that are nearby along the current direction are serviced together, so the head travels a shorter overall distance.
+
+2. I/O Bound Concept:
+If an Operating System is described as being "I/O Bound" during a task, what does that actually mean for the CPU? Is the CPU at 100% usage or is it mostly idle? Why?
+
+Answer:
+Being I/O Bound means the task spends most of its time waiting for input/output operations such as disk reads, network communication, or device access, instead of doing useful CPU work. The CPU is usually not near 100% usage; it is often mostly idle because it is waiting for data to arrive or for an I/O device to finish. Once the I/O completes, the CPU may briefly process the data and then go back to waiting again. So the bottleneck is the speed of the I/O system, not the CPU's processing power.
+
+3. AI Industry Connection (Phase 3):
+Explain why storing an AI image dataset as 1,000,000 separate `.jpg` files causes high I/O overhead and GPU starvation compared to packing them into a single sequential binary format (e.g., TFRecord, WebDataset, or HDF5).
+
+Answer:
+Storing a dataset as 1,000,000 small `.jpg` files creates enormous filesystem and I/O overhead. Each file requires separate metadata lookup, open/read/close operations, directory traversal, and often many random disk seeks. The system spends a large amount of time locating and reading tiny pieces of data instead of transferring image data efficiently. This causes high latency and low throughput, so the CPU and storage stack become overloaded while the GPU sits idle waiting for batches of images. In contrast, sequential formats like TFRecord, WebDataset, or HDF5 store many samples in large contiguous binary blocks. The program can read long streams with far fewer seeks and much higher throughput, which keeps the GPU fed with data continuously and reduces starvation.
