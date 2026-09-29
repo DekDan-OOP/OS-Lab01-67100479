@@ -1,0 +1,18 @@
+======================================================
+COE67-222 Operating Systems - Lab 07 Report
+Name: Danich Khawngam
+Student ID: 67100479
+======================================================
+
+1. The Convoy Effect (Phase 2):
+In the FCFS output of `cpu_scheduler.py`, what is the "Convoy Effect"? How did the presence of Process P1 affect the waiting times of P2 and P3?
+Answer: The Convoy Effect occurs when a long process makes shorter processes wait for a long time. In the FCFS scheduler, P1 requires 10 CPU units, so P2 has to wait 10 units before running, while P3 has to wait 12 units. Therefore, P1 significantly increases the waiting times of P2 and P3, resulting in an average waiting time of 7.33 units.    
+
+2. Choosing the Time Quantum:
+In Round Robin, the Time Quantum is critical. 
+- What happens if the OS sets the Time Quantum extremely large (e.g., Quantum = 100)? Which algorithm does RR start to behave like? Answer: If the Time Quantum is extremely large, most processes will finish before their quantum expires. Therefore, Round Robin starts to behave like FCFS because there are very few context switches.
+- What happens if the OS sets the Time Quantum extremely small (e.g., Quantum = 0.0001)? (Hint: Think about Context Switching overhead).Answer:The OS will perform context switches very frequently. The context-switching overhead becomes significant, reducing CPU efficiency and overall performance because the CPU spends too much time switching between processes instead of doing useful work.
+
+3. AI Context:
+In Phase 3, we used a Round Robin approach for generating tokens in an LLM. Explain why iteration-level Round Robin scheduling prevents long user queries from starving short queries, and how it improves perceived latency (Time To First Token / TTFT) for interactive AI applications.
+Answer: Iteration-level Round Robin scheduling prevents long user queries from starving short queries by giving each active request a chance to generate tokens during each iteration. A long request cannot monopolize the GPU until it finishes; shorter requests can receive compute and generate their tokens in between. This allows short requests to produce their first token earlier, reducing Time To First Token (TTFT). As a result, users see a response sooner and the AI application feels more responsive, even though the total processing time of a long request may not decrease significantly.
