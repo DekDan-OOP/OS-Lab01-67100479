@@ -1,0 +1,20 @@
+======================================================
+COE67-222 Operating Systems - Lab 06 Report
+Name: Danich Khawngam
+Student ID: 67100479
+======================================================
+
+1. FIFO vs LRU (Phase 2):
+In the `page_replacement.py` script, why did the LRU algorithm perform better (have fewer page faults) than the FIFO algorithm for the given reference string? Explain how LRU decides which page to evict.
+
+Answer: LRU performed better because the reference string tends to reuse pages that were accessed recently. LRU keeps pages that have been used recently and evicts the page that has not been used for the longest time. FIFO, however, evicts the page that entered memory first, even if that page is still being used frequently. Therefore, FIFO can remove useful pages and cause more page faults.
+
+2. Understanding Thrashing (Phase 3):
+Based on your observation of `ai_thrashing.py`, define "Thrashing" in your own words. Why is the processing time significantly higher in Scenario 2?
+
+Answer: Thrashing occurs when the system spends most of its time moving pages between RAM and disk instead of executing programs. Processing time is significantly higher in Scenario 2 because its memory workload exceeds the available RAM. This causes many page faults and frequent swapping, so the operating system spends more time managing memory than doing useful computation.
+
+3. AI Engineering Decision:
+If you are training an AI model and your system begins to thrash because the RAM is full, lowering the `batch_size` in your Python code is a common solution. How does lowering the `batch_size` help the Operating System resolve the Thrashing problem?
+
+Answer: Lowering the `batch_size` makes each training step process fewer samples at once. This reduces the amount of memory required for input data, activations, and gradients, allowing the working set to fit better in RAM. As a result, fewer pages need to be swapped between RAM and disk, reducing page faults and thrashing and improving processing time.
