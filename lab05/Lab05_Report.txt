@@ -1,0 +1,30 @@
+======================================================
+COE67-222 Operating Systems - Lab 05 Report
+Name: Danich    Khawngam
+Student ID: 67100479
+======================================================
+1. Address Translation Math (Phase 3):
+Assume an OS has a PAGE_SIZE of 4096 bytes. 
+If an AI model requests data at Logical Address 10000, calculate:
+- The Page Number: [____]
+- The Offset: [____]
+(Show your calculation steps briefly).
+
+Answer:
+10000 = (2 × 4096) + 1808
+Page Number = 10000 // 4096 = 2
+Offset = 10000 mod 4096 = 1808 bytes
+
+2. Physical Memory Fragmentation:
+In our `page_table_sim.py`, Page 0 was stored in Frame 12, and Page 1 was in Frame 45.
+
+Why does the OS store continuous logical data in scattered/fragmented physical frames instead of putting them right next to each other? What problem does this solve?
+
+Answer:
+Virtual memory maps consecutive logical pages to any available physical frames. This means the OS does not need one large contiguous free block of physical memory. It solves external fragmentation, improves memory utilization, and allows multiple processes to run safely with independent address spaces.
+
+3. The AI Context (mmap):
+In Phase 4, we mapped a 50MB file to memory, but the physical RAM usage did not increase significantly. Explain how the OS Virtual Memory and Page Table achieve this, and what actually happens at the OS level when index 25,000,000 is accessed.
+
+Answer:
+`mmap` reserves a virtual address range and records the file mapping in the process's page tables, but it does not immediately copy the entire 50MB file into RAM. Pages are loaded lazily, only when accessed. When index 25,000,000 is accessed, the CPU translates its virtual address. If the corresponding page is not in RAM, a page fault occurs. The OS finds the corresponding file offset, loads that page into a free physical frame, updates the page table, and restarts the instruction. Later accesses can use the page directly from RAM; the page can also be evicted and reloaded if necessary.
