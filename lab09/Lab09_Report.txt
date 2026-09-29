@@ -1,0 +1,20 @@
+=======================================================
+COE67-222 Operating Systems - Lab 09 Report
+Name: Danich Khawngam
+Student ID: 67100479
+======================================================
+
+1. Inodes and Metadata:
+In the `inode_inspector.py` script, we printed the "Inode Number". If you rename the file using the Linux `mv` command, will the Inode Number change? Why or why not? (Hint: Think about how the OS separates the file name from the actual data).
+
+Answer:No, the Inode Number normally does not change when a file is renamed within the same filesystem. The filename is stored separately from the Inode. Renaming changes the directory entry/name, while the file's Inode and underlying data remain the same.
+
+2. POSIX Permissions:
+If you want to set a file's permission so that the Owner has Read/Write/Execute (7), the Group has Read/Execute (5), and Others have absolutely no access (0), what would be the 3-digit octal number you pass into `os.chmod()`? 
+
+Answer:The octal permission is 0o750. The Owner has 7 (Read/Write/Execute), the Group has 5 (Read/Execute), and Others have 0 (no access).
+
+3. The AI Context:
+Why is it safer to rely on Operating System file permissions (like `os.chmod(0o444)`) to protect production model weights rather than relying solely on application-level logic or Python try-except blocks?
+
+Answer: OS-level file permissions are safer because they are enforced by the operating system kernel. Even if an application has a bug and accidentally tries to write to a protected model file, the kernel can deny the operation. A Python try-except block only handles errors after they occur; it does not provide a security boundary. This helps protect valuable production model weights from accidental or unauthorized modification.
